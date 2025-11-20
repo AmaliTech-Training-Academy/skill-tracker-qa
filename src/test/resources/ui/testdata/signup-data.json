@@ -1,0 +1,22 @@
+{
+  "validUser": {
+    "email": "kofipeter@gmail.com",
+    "password": "OhAbibahey!1",
+    "confirmPassword": "OhAbibahey!1"
+  },
+  "mismatchedUser": {
+    "email": "kofipeter@gmail.com",
+    "password": "OhAbibahey!1",
+    "confirmPassword": "Charley!1wai"
+  },
+  "wrongEmailFormat": {
+    "email": "kofipeter.com",
+    "password": "OhAbibahey!1",
+    "confirmPassword": "Charley!1wai"
+  },
+  "wrongPasswordLength": {
+    "email": "kofipeter.com",
+    "password": "12A",
+    "confirmPassword": "12A"
+  }
+}
