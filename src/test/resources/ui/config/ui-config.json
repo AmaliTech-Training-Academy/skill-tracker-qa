@@ -1,0 +1,63 @@
+{
+  "activeEnvironment": "dev",
+
+  "default": {
+    "browser": "chrome",
+    "browserSize": "1920x1080",
+    "fullscreen": false,
+    "maximizeWindow": true,
+    "headless": false,
+    "remote": false,
+    "gridUrl": "http://localhost:4444/wd/hub",
+
+    "timeouts": {
+      "implicitWait": 10,
+      "explicitWait": 20,
+      "pageLoadTimeout": 30
+    },
+
+    "screenshotOnFailure": true,
+    "savePageSourceOnFailure": true,
+
+    "allure": {
+      "enabled": true,
+      "resultsDirectory": "target/allure-results",
+      "reportDirectory": "target/allure-report"
+    },
+
+    "reporting": {
+      "screenshots": true,
+      "logs": true,
+      "videoRecording": false
+    }
+  },
+
+  "environments": {
+    "dev": {
+      "baseUrl": "https://dev.dy006p1vkpl2e.amplifyapp.com/",
+      "browser": "chrome",
+      "headless": false,
+      "browserSize": "1366x768"
+    },
+    "qa": {
+      "baseUrl": "https://qa.skillboost.app/",
+      "browser": "firefox",
+      "headless": false,
+      "browserSize": "1440x900"
+    },
+    "staging": {
+      "baseUrl": "https://staging.skillboost.app/",
+      "browser": "chrome",
+      "headless": true,
+      "remote": true,
+      "browserSize": "1920x1080"
+    },
+    "prod": {
+      "baseUrl": "https://skillboost.app/",
+      "browser": "chrome",
+      "headless": true,
+      "remote": true,
+      "browserSize": "1920x1080"
+    }
+  }
+}
