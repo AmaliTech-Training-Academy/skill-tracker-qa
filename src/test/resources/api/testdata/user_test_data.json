@@ -1,0 +1,25 @@
+{
+  "register": {
+    "valid": {
+      "email": "doyay14179@agenra.com",
+      "password": "Aa1@aQQQ"
+    },
+    "invalid": [
+      {
+        "description": "Missing email",
+        "email": "",
+        "password": "Aa1@aQQQ"
+      },
+      {
+        "description": "Invalid password - too short",
+        "email": "utulv.noblet@inbox.testmail.app",
+        "password": "A"
+      },
+      {
+        "description": "Email already exists",
+        "email": "utulv.noblet@inbox.testmail.app",
+        "password": "Aa1@aQQQ"
+      }
+    ]
+  }
+}
