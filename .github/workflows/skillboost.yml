@@ -1,0 +1,149 @@
+name: SkillBoost Automation Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # -----------------------------------------------------
+  # 1. Run Selenium UI + API Tests
+  # -----------------------------------------------------
+  run-tests:
+    name: Run UI + API Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image for tests
+        run: docker build -t skillboost_tests .
+
+      - name: Run tests using Docker Compose
+        run: |
+          docker compose up --build --abort-on-container-exit --exit-code-from tests
+        env:
+          COMPOSE_FILE: docker-compose.yml
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+
+
+  # -----------------------------------------------------
+  # 2. Generate + Deploy Allure Report
+  # -----------------------------------------------------
+  deploy-allure:
+    name: Publish Allure Report
+    runs-on: ubuntu-latest
+    needs: run-tests
+    if: always()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download Allure results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+
+      - name: Install Allure CLI
+        run: |
+          wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+          tar -xzf allure-2.27.0.tgz
+          sudo mv allure-2.27.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
+
+      - name: Generate Allure Report
+        run: allure generate allure-results --clean -o allure-report
+
+      - name: Deploy Allure to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: allure-report
+          publish_branch: gh-pages
+          destination_dir: allure-report
+
+
+  # -----------------------------------------------------
+  # 3. Slack Notification
+  # -----------------------------------------------------
+  notify-slack:
+    name: Slack Notification
+    runs-on: ubuntu-latest
+    needs: [ run-tests, deploy-allure ]
+    if: always()
+
+    steps:
+      - name: Send Slack notification
+        run: |
+          STATUS="success"
+          COLOR="good"
+          EMOJI="✅"
+          TITLE="*SkillBoost Automation Pipeline Passed*"
+
+          # Failure logic
+          if [[ "${{ needs.run-tests.result }}" == "failure" || \
+                "${{ needs.deploy-allure.result }}" == "failure" ]]; then
+            STATUS="completed_with_failures"
+            COLOR="warning"
+            EMOJI="⚠️"
+            TITLE="*SkillBoost Automation Pipeline Completed with Failures*"
+          fi
+
+          # Cancelled / Skipped logic
+          if [[ "${{ needs.run-tests.result }}" == "cancelled" || \
+                "${{ needs.deploy-allure.result }}" == "cancelled" || \
+                "${{ needs.run-tests.result }}" == "skipped" || \
+                "${{ needs.deploy-allure.result }}" == "skipped" ]]; then
+            STATUS="failed"
+            COLOR="danger"
+            EMOJI="❌"
+            TITLE="*SkillBoost Automation Pipeline Failed*"
+          fi
+
+          # Report Links
+          BASE_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${{ github.event.repository.name }}"
+          ALLURE_URL="$BASE_URL/allure-report/"
+
+          # Build URL
+          BUILD_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
+          # Slack Message Payload
+          curl -X POST -H 'Content-type: application/json' --data "{
+             \"attachments\": [
+               {
+                 \"color\": \"$COLOR\",
+                 \"blocks\": [
+                   {
+                     \"type\": \"section\",
+                     \"text\": {
+                       \"type\": \"mrkdwn\",
+                       \"text\": \"$EMOJI $TITLE\n*Status:* $STATUS\" 
+                     }
+                   },
+                   {
+                     \"type\": \"section\",
+                     \"fields\": [
+                       {
+                         \"type\": \"mrkdwn\",
+                         \"text\": \"*Allure Report:* <${ALLURE_URL}|Open Report>\"
+                       },
+                       {
+                         \"type\": \"mrkdwn\",
+                         \"text\": \"*Build URL:* <${BUILD_URL}|View Pipeline Run>\"
+                       }
+                     ]
+                   }
+                 ]
+               }
+             ]
+           }" ${{ secrets.SLACK_WEBHOOK_URL }}
