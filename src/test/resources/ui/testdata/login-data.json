@@ -1,0 +1,22 @@
+{
+  "validUser": {
+    "email": "pascochewer@gmail.com",
+    "password": "Habibaey!1"
+  },
+  "invalidUser": {
+    "email": "pascochewer@gmail.com",
+    "password": "HHabibaey1!"
+  },
+  "emptyUser": {
+    "email": "",
+    "password": ""
+  },
+  "invalidDetails": {
+    "email": "A@",
+    "password": "12"
+  },
+  "validDetails": {
+    "email": "kofipeter@gmail.com",
+    "password": "Habibaey!1"
+  }
+}
