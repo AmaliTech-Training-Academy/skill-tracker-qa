@@ -31,91 +31,96 @@ public final class DriverFactory {
      */
     public static void initializeDriver() {
         if (driverThread.get() != null) {
-            return; // Prevent multiple instances per thread
+            return;
         }
 
+        // Read browser
         String browser = System.getProperty("browser", ConfigReader.getBrowser()).toLowerCase();
         boolean headless = Boolean.parseBoolean(System.getProperty("headless", String.valueOf(ConfigReader.isHeadless())));
-        boolean remote = Boolean.parseBoolean(System.getProperty("remote", String.valueOf(ConfigReader.isRemote())));
-        String gridUrl = System.getProperty("gridUrl", ConfigReader.getGridUrl());
+
+        // Detect remote execution
+        String envRemoteUrl = System.getenv("SELENIUM_REMOTE_URL"); // NEW
+        String configGridUrl = ConfigReader.getGridUrl();
+        String sysGridUrl = System.getProperty("gridUrl");
+
+        // Final Grid URL priority → ENV > System Property > config file
+        String finalGridUrl =
+                (envRemoteUrl != null && !envRemoteUrl.isEmpty()) ? envRemoteUrl :
+                        (sysGridUrl != null && !sysGridUrl.isEmpty()) ? sysGridUrl :
+                                configGridUrl;
+
+        // Final remote switch → true if SELENIUM_REMOTE_URL exists, OR system says remote=true
+        boolean remote =
+                (envRemoteUrl != null && !envRemoteUrl.isEmpty()) ||
+                        Boolean.parseBoolean(System.getProperty("remote", String.valueOf(ConfigReader.isRemote())));
 
         WebDriver driver;
 
         try {
-            // ───────────────────────────────
-            // ✅ Remote (Grid/Docker) Mode
-            // ───────────────────────────────
             if (remote) {
+                // Remote WebDriver mode
+                System.out.println("🔗 Using RemoteWebDriver @ " + finalGridUrl);
+
                 switch (browser) {
                     case "chrome" -> {
-                        ChromeOptions chromeOptions = new ChromeOptions();
-                        if (headless) chromeOptions.addArguments("--headless=new");
-                        chromeOptions.addArguments("--no-sandbox", "--disable-dev-shm-usage");
-                        driver = new RemoteWebDriver(new URL(gridUrl), chromeOptions);
+                        ChromeOptions options = new ChromeOptions();
+                        if (headless) options.addArguments("--headless=new");
+                        options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
+                        driver = new RemoteWebDriver(new URL(finalGridUrl), options);
                     }
                     case "firefox" -> {
-                        FirefoxOptions firefoxOptions = new FirefoxOptions();
-                        if (headless) firefoxOptions.addArguments("--headless");
-                        driver = new RemoteWebDriver(new URL(gridUrl), firefoxOptions);
+                        FirefoxOptions options = new FirefoxOptions();
+                        if (headless) options.addArguments("--headless");
+                        driver = new RemoteWebDriver(new URL(finalGridUrl), options);
                     }
                     case "edge" -> {
-                        EdgeOptions edgeOptions = new EdgeOptions();
-                        if (headless) edgeOptions.addArguments("--headless=new");
-                        driver = new RemoteWebDriver(new URL(gridUrl), edgeOptions);
+                        EdgeOptions options = new EdgeOptions();
+                        if (headless) options.addArguments("--headless=new");
+                        driver = new RemoteWebDriver(new URL(finalGridUrl), options);
                     }
                     default -> throw new IllegalArgumentException("Unsupported remote browser: " + browser);
                 }
-            }
 
-            // ───────────────────────────────
-            // ✅ Local Mode
-            // ───────────────────────────────
-            else {
+            } else {
+                // Local webdriver mode
                 switch (browser) {
                     case "chrome" -> {
-                        ChromeOptions chromeOptions = new ChromeOptions();
-                        if (headless) chromeOptions.addArguments("--headless=new");
-                        chromeOptions.addArguments("--no-sandbox", "--disable-dev-shm-usage");
-                        driver = new ChromeDriver(chromeOptions);
+                        ChromeOptions options = new ChromeOptions();
+                        if (headless) options.addArguments("--headless=new");
+                        options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
+                        driver = new ChromeDriver(options);
                     }
                     case "firefox" -> {
-                        FirefoxOptions firefoxOptions = new FirefoxOptions();
-                        if (headless) firefoxOptions.addArguments("--headless");
-                        driver = new FirefoxDriver(firefoxOptions);
+                        FirefoxOptions options = new FirefoxOptions();
+                        if (headless) options.addArguments("--headless");
+                        driver = new FirefoxDriver(options);
                     }
                     case "edge" -> {
-                        EdgeOptions edgeOptions = new EdgeOptions();
-                        if (headless) edgeOptions.addArguments("--headless=new");
-                        driver = new EdgeDriver(edgeOptions);
+                        EdgeOptions options = new EdgeOptions();
+                        if (headless) options.addArguments("--headless=new");
+                        driver = new EdgeDriver(options);
                     }
                     default -> throw new IllegalArgumentException("Unsupported browser: " + browser);
                 }
             }
 
-            // ───────────────────────────────
-            // ✅ Browser Window Configuration
-            // ───────────────────────────────
-            if (ConfigReader.isFullscreen()) {
-                driver.manage().window().fullscreen();
-            } else if (ConfigReader.isMaximize()) {
-                driver.manage().window().maximize();
-            }
+            // Window config
+            if (ConfigReader.isFullscreen()) driver.manage().window().fullscreen();
+            else if (ConfigReader.isMaximize()) driver.manage().window().maximize();
 
-            // Implicit Wait (optional global default)
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(ConfigReader.getImplicitWait()));
             driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(ConfigReader.getPageLoadTimeout()));
 
             driverThread.set(driver);
 
-            System.out.println("✅ WebDriver initialized: " +
-                    (remote ? "Remote" : "Local") + " | Browser: " + browser + " | Headless: " + headless);
+            System.out.println("✅ WebDriver initialized → Mode: " + (remote ? "REMOTE" : "LOCAL") +
+                    ", Browser: " + browser + ", Headless: " + headless);
 
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("❌ Invalid Grid URL: " + gridUrl, e);
         } catch (Exception e) {
-            throw new RuntimeException("❌ Failed to initialize WebDriver for browser: " + browser, e);
+            throw new RuntimeException("❌ Failed to initialize WebDriver in " + (remote ? "REMOTE" : "LOCAL") + " mode", e);
         }
     }
+
 
     /**
      * Returns the WebDriver instance for the current thread.
