@@ -7,6 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
+
   # -----------------------------------------------------
   # 1. Run Selenium UI + API Tests
   # -----------------------------------------------------
@@ -33,6 +34,43 @@ jobs:
         with:
           name: allure-results
           path: allure-results
+
+
+  # -----------------------------------------------------
+  # 2 .SECURITY TESTS (OWASP ZAP)
+  # -----------------------------------------------------
+  security:
+    name: OWASP ZAP Scan
+    runs-on: ubuntu-latest
+    needs: run-tests
+    if: always()
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare security report folder
+        run: mkdir -p security-test
+
+      - name: Run OWASP ZAP Baseline Scan
+        run: |
+          docker run --rm --user root \
+            -v ${{ github.workspace }}/security_test:/zap/wrk:rw \
+            ghcr.io/zaproxy/zaproxy:stable \
+            zap-baseline.py \
+            -t https://dev.dy006p1vkpl2e.amplifyapp.com \
+            -r zap-report.html \
+            -J zap-report.json \
+            -I
+
+          # Rename HTML for GitHub Pages
+          mv security_test/zap-report.html security_test/index.html
+
+      - name: Upload ZAP Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-report
+          path: security_test/
 
 
   # -----------------------------------------------------
@@ -74,12 +112,40 @@ jobs:
 
 
   # -----------------------------------------------------
-  # 3. Slack Notification
+  # 4. Deploy ZAP Security Report
+  # -----------------------------------------------------
+  deploy-zap-report:
+    name: Publish ZAP Security Report
+    runs-on: ubuntu-latest
+    needs: security
+    if: always()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download ZAP report artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: zap-report
+          path: zap-report
+
+      - name: Deploy ZAP Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: zap-report
+          publish_branch: gh-pages
+          destination_dir: zap-report
+
+
+  # -----------------------------------------------------
+  # 5. Slack Notification (UI + API + Allure + Security)
   # -----------------------------------------------------
   notify-slack:
     name: Slack Notification
     runs-on: ubuntu-latest
-    needs: [ run-tests, deploy-allure ]
+    needs: [ run-tests, deploy-allure, deploy-zap-report ]
     if: always()
 
     steps:
@@ -90,34 +156,35 @@ jobs:
           EMOJI="✅"
           TITLE="*SkillBoost Automation Pipeline Passed*"
 
-          # Failure logic
+          # Failure
           if [[ "${{ needs.run-tests.result }}" == "failure" || \
-                "${{ needs.deploy-allure.result }}" == "failure" ]]; then
+                "${{ needs.deploy-allure.result }}" == "failure" || \
+                "${{ needs.deploy-zap-report.result }}" == "failure" ]]; then
             STATUS="completed_with_failures"
             COLOR="warning"
             EMOJI="⚠️"
-            TITLE="*SkillBoost Automation Pipeline Completed with Failures*"
+            TITLE="*Pipeline Completed with Failures*"
           fi
 
-          # Cancelled / Skipped logic
+          # Cancelled / Skipped
           if [[ "${{ needs.run-tests.result }}" == "cancelled" || \
                 "${{ needs.deploy-allure.result }}" == "cancelled" || \
+                "${{ needs.deploy-zap-report.result }}" == "cancelled" || \
                 "${{ needs.run-tests.result }}" == "skipped" || \
-                "${{ needs.deploy-allure.result }}" == "skipped" ]]; then
+                "${{ needs.deploy-allure.result }}" == "skipped" || \
+                "${{ needs.deploy-zap-report.result }}" == "skipped" ]]; then
             STATUS="failed"
             COLOR="danger"
             EMOJI="❌"
-            TITLE="*SkillBoost Automation Pipeline Failed*"
+            TITLE="*Pipeline Failed*"
           fi
 
-          # Report Links
           BASE_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${{ github.event.repository.name }}"
           ALLURE_URL="$BASE_URL/allure-report/"
+          ZAP_URL="$BASE_URL/zap-report/"
 
-          # Build URL
           BUILD_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 
-          # Slack Message Payload
           curl -X POST -H 'Content-type: application/json' --data "{
              \"attachments\": [
                {
@@ -125,22 +192,19 @@ jobs:
                  \"blocks\": [
                    {
                      \"type\": \"section\",
-                     \"text\": {
-                       \"type\": \"mrkdwn\",
-                       \"text\": \"$EMOJI $TITLE\n*Status:* $STATUS\" 
-                     }
+                     \"text\": { \"type\": \"mrkdwn\", \"text\": \"$EMOJI $TITLE\n*Status:* $STATUS\" }
                    },
                    {
                      \"type\": \"section\",
                      \"fields\": [
-                       {
-                         \"type\": \"mrkdwn\",
-                         \"text\": \"*Allure Report:* <${ALLURE_URL}|Open Report>\"
-                       },
-                       {
-                         \"type\": \"mrkdwn\",
-                         \"text\": \"*Build URL:* <${BUILD_URL}|View Pipeline Run>\"
-                       }
+                       { \"type\": \"mrkdwn\", \"text\": \"*Allure Report:* <${ALLURE_URL}|Open Report>\" },
+                       { \"type\": \"mrkdwn\", \"text\": \"*Security Scan:* <${ZAP_URL}|Open ZAP Report>\" }
+                     ]
+                   },
+                   {
+                     \"type\": \"section\",
+                     \"fields\": [
+                       { \"type\": \"mrkdwn\", \"text\": \"*Build URL:* <${BUILD_URL}|View Pipeline Run>\" }
                      ]
                    }
                  ]
