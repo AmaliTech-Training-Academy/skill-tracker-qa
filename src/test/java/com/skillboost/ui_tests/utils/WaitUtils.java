@@ -7,35 +7,46 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
-/**
- * Utility class for explicit waits.
- * Provides reusable methods to handle synchronization in UI tests.
- * Ensures stable test execution across dynamic web pages.
- */
 public final class WaitUtils {
 
     private static final ThreadLocal<WebDriverWait> waitThread = new ThreadLocal<>();
+    private static final ThreadLocal<String> sessionIdThread = new ThreadLocal<>();
 
-    private WaitUtils() {
-        // Prevent instantiation
-    }
+    private WaitUtils() {}
 
-    /**
-     * Retrieves the current thread's WebDriverWait instance.
-     * Initializes a new one if it doesn't exist.
-     */
     public static WebDriverWait getWait() {
-        if (waitThread.get() == null) {
-            WebDriver driver = DriverFactory.getDriver();
-            int timeoutSec = ConfigReader.getPageLoadTimeout(); // should return seconds, not ms
-            waitThread.set(new WebDriverWait(driver, Duration.ofSeconds(timeoutSec)));
+        WebDriver driver = DriverFactory.getDriver();
+
+        if (driver == null) {
+            throw new IllegalStateException("WebDriver is null. Ensure DriverFactory initialises the driver.");
         }
-        return waitThread.get();
+
+        String currentSessionId = ((HasCapabilities) driver).getCapabilities()
+                .getCapability("webdriver.remote.sessionid") != null
+                ? ((HasCapabilities) driver).getCapabilities()
+                .getCapability("webdriver.remote.sessionid")
+                .toString()
+                : "local-driver"; // For local non-remote WebDriver
+
+        WebDriverWait wait = waitThread.get();
+        String storedSessionId = sessionIdThread.get();
+
+        // Create a new wait instance if:
+        // 1. missing, or
+        // 2. driver restarted (session ID changed)
+        if (wait == null || storedSessionId == null || !currentSessionId.equals(storedSessionId)) {
+            int timeout = ConfigReader.getPageLoadTimeout();
+            wait = new WebDriverWait(driver, Duration.ofSeconds(timeout));
+            waitThread.set(wait);
+            sessionIdThread.set(currentSessionId);
+        }
+
+        return wait;
     }
 
-    // ─────────────────────────────────────────────
-    // ✅ Wait Methods by WebElement
-    // ─────────────────────────────────────────────
+    // ------------------------------------------------------------------
+    // Wait by WebElement
+    // ------------------------------------------------------------------
 
     public static WebElement waitForVisibility(WebElement element) {
         return getWait().until(ExpectedConditions.visibilityOf(element));
@@ -45,9 +56,9 @@ public final class WaitUtils {
         return getWait().until(ExpectedConditions.elementToBeClickable(element));
     }
 
-    // ─────────────────────────────────────────────
-    // ✅ Wait Methods by Locator (By)
-    // ─────────────────────────────────────────────
+    // ------------------------------------------------------------------
+    // Wait by Locator
+    // ------------------------------------------------------------------
 
     public static WebElement waitForVisibility(By locator) {
         return getWait().until(ExpectedConditions.visibilityOfElementLocated(locator));
@@ -65,62 +76,45 @@ public final class WaitUtils {
         return getWait().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator));
     }
 
-    public static void waitForTextToBePresent(By locator, String text) {
-        getWait().until(ExpectedConditions.textToBePresentInElementLocated(locator, text));
-    }
-
     public static boolean waitForInvisibility(By locator) {
         return getWait().until(ExpectedConditions.invisibilityOfElementLocated(locator));
     }
 
-    /**
-     * Waits until an element is both visible and clickable.
-     */
+    public static void waitForTextToBePresent(By locator, String text) {
+        getWait().until(ExpectedConditions.textToBePresentInElementLocated(locator, text));
+    }
+
     public static WebElement waitForReady(By locator) {
         WebElement element = waitForVisibility(locator);
         getWait().until(ExpectedConditions.elementToBeClickable(locator));
         return element;
     }
 
-    // ─────────────────────────────────────────────
-    // ✅ Custom Utility Waits
-    // ─────────────────────────────────────────────
+    // ------------------------------------------------------------------
+    // Custom waits
+    // ------------------------------------------------------------------
 
-    /**
-     * Waits for a specific URL fragment to appear in the current browser URL.
-     */
     public static void waitForUrlContains(String partialUrl) {
         getWait().until(ExpectedConditions.urlContains(partialUrl));
     }
 
-    /**
-     * Waits for a custom condition (lambda or ExpectedCondition) to be true within a timeout.
-     *
-     * Example:
-     * WaitUtils.waitForCondition(driver, d -> element.isDisplayed(), 5, "Element not visible in time");
-     */
     public static void waitForCondition(WebDriver driver,
                                         java.util.function.Function<WebDriver, Boolean> condition,
                                         int timeoutInSeconds,
                                         String failureMessage) {
         try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutInSeconds));
-            wait.until(d -> {
-                try {
-                    return condition.apply(d);
-                } catch (Exception e) {
-                    return false;
-                }
-            });
+            new WebDriverWait(driver, Duration.ofSeconds(timeoutInSeconds))
+                    .until(d -> {
+                        try { return condition.apply(d); }
+                        catch (Exception ignored) { return false; }
+                    });
         } catch (TimeoutException e) {
             throw new TimeoutException(failureMessage);
         }
     }
 
-    /**
-     * Resets the ThreadLocal WebDriverWait instance (e.g., after driver restart).
-     */
     public static void resetWait() {
         waitThread.remove();
+        sessionIdThread.remove();
     }
 }
