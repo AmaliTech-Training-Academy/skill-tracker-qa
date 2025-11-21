@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @Epic("User Service")
 @Feature("Register")
-public class UserTests extends BaseTest {
+public class UserApiTest extends BaseTest {
 
     private static UserEndpoints userEndpoints;
     private static Map<String, Object> testData;
