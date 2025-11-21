@@ -167,7 +167,8 @@
                 <version>3.2.5</version>
                 <configuration>
                     <includes>
-                        <include>**/*Test.java</include> <!-- fixed naming -->
+                        <include>**/*Test.java</include>
+                        <include>**/*ApiTest.java</include><!-- fixed naming -->
                     </includes>
                     <useModulePath>false</useModulePath>
                     <systemPropertyVariables>
