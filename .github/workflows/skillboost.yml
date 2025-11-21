@@ -63,6 +63,9 @@ jobs:
             -J zap-report.json \
             -I
 
+          # Fix permissions so GitHub runner can modify files
+          sudo chmod -R 777 security_test
+          
           # Rename HTML for GitHub Pages
           mv security_test/zap-report.html security_test/index.html
 
