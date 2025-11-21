@@ -77,7 +77,7 @@ jobs:
 
 
   # -----------------------------------------------------
-  # 2. Generate + Deploy Allure Report
+  # 3. Generate + Deploy Allure Report
   # -----------------------------------------------------
   deploy-allure:
     name: Publish Allure Report
