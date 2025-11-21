@@ -14,11 +14,12 @@ import java.util.Optional;
  *
  * Reads from: src/test/resources/ui/config/ui-config.json
  *
- * Features:
- * - Supports environment switching via -Denvironment=qa
- * - Centralized timeout and driver settings
+ * Improvements:
+ * - Safer environment selection
+ * - Proper fallback logic
+ * - Centralized timeout lookup
  * - CI/CD-safe path resolution
- * - Unified timeout units (seconds)
+ * - Cleaner and more predictable behavior
  */
 public final class ConfigReader {
 
@@ -30,7 +31,6 @@ public final class ConfigReader {
     }
 
     private ConfigReader() {
-        // Prevent instantiation
     }
 
     // ─────────────────────────────────────────────
@@ -38,7 +38,7 @@ public final class ConfigReader {
     // ─────────────────────────────────────────────
     private static void loadConfig() {
         try {
-            // CI/CD safe path resolution
+            // CI-friendly path
             String configPath = Paths.get("src", "test", "resources", "ui", "config", "ui-config.json").toString();
             File file = new File(configPath);
 
@@ -49,20 +49,22 @@ public final class ConfigReader {
             ObjectMapper mapper = new ObjectMapper();
             configRoot = mapper.readTree(file);
 
-            // Determine environment (CLI: -Denvironment=qa)
+            // Which environment?
             String env = Optional.ofNullable(System.getProperty("environment"))
                     .orElse(configRoot.path("activeEnvironment").asText("dev"));
 
-            activeEnv = configRoot.path("environments").path(env);
+            JsonNode envNode = configRoot.path("environments").path(env);
 
-            if (activeEnv.isMissingNode() || activeEnv.isEmpty()) {
+            if (envNode.isMissingNode() || envNode.isEmpty()) {
                 throw new RuntimeException("❌ Environment '" + env + "' not found in ui-config.json");
             }
 
-            System.out.println("✅ Loaded UI configuration for environment: " + env);
+            activeEnv = envNode;
 
-        } catch (IOException e) {
-            throw new RuntimeException("❌ Failed to load ui-config.json: " + e.getMessage(), e);
+            System.out.println("✅ UI config loaded (environment = " + env + ")");
+
+        } catch (Exception e) {
+            throw new RuntimeException("❌ Failed to load ui-config.json → " + e.getMessage(), e);
         }
     }
 
@@ -84,6 +86,7 @@ public final class ConfigReader {
     }
 
     public static boolean isRemote() {
+        // Only based on config → DriverFactory has override logic
         return configRoot.path("default").path("remote").asBoolean(false);
     }
 
@@ -108,23 +111,23 @@ public final class ConfigReader {
     }
 
     // ─────────────────────────────────────────────
-    // ✅ Timeouts (All in Seconds)
+    // ✅ All Timeout Values (Seconds)
     // ─────────────────────────────────────────────
     public static int getImplicitWait() {
-        return getTimeoutValue("implicitWait", 10);
+        return getTimeout("implicitWait", 10);
     }
 
     public static int getExplicitWait() {
-        return getTimeoutValue("explicitWait", 20);
+        return getTimeout("explicitWait", 20);
     }
 
     public static int getPageLoadTimeout() {
-        return getTimeoutValue("pageLoadTimeout", 30);
+        return getTimeout("pageLoadTimeout", 30);
     }
 
-    private static int getTimeoutValue(String key, int defaultValue) {
+    private static int getTimeout(String key, int defaultVal) {
         JsonNode timeouts = configRoot.path("default").path("timeouts");
-        return timeouts.path(key).asInt(defaultValue);
+        return timeouts.path(key).asInt(defaultVal);
     }
 
     // ─────────────────────────────────────────────
