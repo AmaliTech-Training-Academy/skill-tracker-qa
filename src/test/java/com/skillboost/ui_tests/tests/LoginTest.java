@@ -21,7 +21,6 @@ import org.openqa.selenium.WebElement;
 import java.util.Map;
 
 
-
 /**
  * UI Test Suite for SkillBoost Login Page.
  * Covers navigation from homepage and login functionality with different credentials.
