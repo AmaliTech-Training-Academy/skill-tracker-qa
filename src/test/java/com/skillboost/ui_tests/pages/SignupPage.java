@@ -141,5 +141,10 @@ public class SignupPage extends UiBasePage {
         confirmPasswordInput.clear();
     }
 
+    public void scrollToCreateAccountButton() {
+        scrollToElement(createAccountButton); // uses UiBasePage method
+    }
+
+
 
 }
