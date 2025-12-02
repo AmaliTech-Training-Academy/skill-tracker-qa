@@ -3,10 +3,7 @@ package com.skillboost.ui_tests.tests;
 
 
 import com.skillboost.ui_tests.base.UiBaseTest;
-import com.skillboost.ui_tests.pages.ForgotPasswordPage;
-import com.skillboost.ui_tests.pages.HomePage;
-import com.skillboost.ui_tests.pages.LoginPage;
-import com.skillboost.ui_tests.pages.SignupPage;
+import com.skillboost.ui_tests.pages.*;
 import com.skillboost.ui_tests.utils.AssertionLogger;
 import com.skillboost.ui_tests.utils.JsonDataReader;
 import com.skillboost.ui_tests.utils.WaitUtils;
@@ -15,6 +12,7 @@ import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebElement;
 
@@ -25,7 +23,7 @@ import java.util.Map;
  * UI Test Suite for SkillBoost Login Page.
  * Covers navigation from homepage and login functionality with different credentials.
  */
-
+@Tag("smoke")
 public class LoginTest extends UiBaseTest {
 
     private static final String TESTDATA_FILE = "login-data.json";
@@ -392,6 +390,50 @@ public class LoginTest extends UiBaseTest {
 
         log.info("Successfully verified Signup page UI elements and navigation.");
     }
+
+
+    @Test
+    @Story("Successful Login and Dashboard Navigation")
+    @DisplayName("Verify valid user can login and see Dashboard")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Ensures that entering valid credentials logs the user in and displays the Dashboard page with main elements visible.")
+    public void verifyValidUserLoginShowsDashboard() {
+        log.info("Navigating to Login Page from Homepage...");
+        HomePage homePage = new HomePage(driver);
+        homePage.clickLoginButton();
+
+        // Wait for Login page to load
+        WaitUtils.waitForUrlContains("/login");
+        LoginPage loginPage = new LoginPage(driver);
+        WaitUtils.waitForVisibility(loginPage.getLogo());
+        WaitUtils.waitForVisibility(loginPage.getWelcomeBackText());
+        log.info("Login page elements are visible.");
+
+        // Load valid credentials from JSON
+        Map<String, Map<String, String>> testData = JsonDataReader.getTestData(TESTDATA_FILE);
+        String email = testData.get("validUser").get("email");
+        String password = testData.get("validUser").get("password");
+
+        // Enter credentials and login
+        loginPage.enterEmail(email);
+        loginPage.enterPassword(password);
+        loginPage.clickLogin();
+        log.info("Entered valid credentials and clicked Login.");
+
+        // Initialize Dashboard page and wait for main elements
+        DashboardPage dashboardPage = new DashboardPage(driver);
+        WaitUtils.waitForVisibility(dashboardPage.getLogoElement());
+        log.info("Dashboard page loaded successfully.");
+
+        // --- Verify Dashboard elements using page methods ---
+        AssertionLogger.assertTrueWithLog(dashboardPage.isLogoVisible(), "Dashboard logo is visible.");
+        AssertionLogger.assertTrueWithLog(dashboardPage.isWelcomeTextVisible(), "Dashboard welcome text is visible.");
+
+
+        // You can also optionally check sidebar menus if needed
+        log.info("Successfully logged in with valid user and verified Dashboard elements.");
+    }
+
 
 
 }
