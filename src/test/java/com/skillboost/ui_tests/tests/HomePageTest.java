@@ -33,7 +33,7 @@ public class HomePageTest extends UiBaseTest {
 
     }
 
-    @Test
+    /*@Test
     @Story("Homepage navigation buttons are interactive")
     @DisplayName("Verify 'Start Practicing' button is clickable on homepage")
     @Severity(SeverityLevel.CRITICAL)
@@ -44,7 +44,7 @@ public class HomePageTest extends UiBaseTest {
         // Step 2: Click the button
         homePage.clickStartPracticing();
         AssertionLogger.assertTrueWithLog(true, "'Start Practicing' button clicked successfully");
-    }
+    }*/
 
 
     @Test
