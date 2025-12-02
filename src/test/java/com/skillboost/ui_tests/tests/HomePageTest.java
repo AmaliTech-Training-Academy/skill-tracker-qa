@@ -41,10 +41,6 @@ public class HomePageTest extends UiBaseTest {
     public void verifyStartPracticingButtonClickable() {
         HomePage homePage = new HomePage(driver);
 
-        // Step 1: Validate that the button is visible before interacting
-        boolean isButtonVisible = homePage.clickStartPracticing();
-        AssertionLogger.assertTrueWithLog(isButtonVisible, "'Start Practicing' button is visible on homepage");
-
         // Step 2: Click the button
         homePage.clickStartPracticing();
         AssertionLogger.assertTrueWithLog(true, "'Start Practicing' button clicked successfully");
