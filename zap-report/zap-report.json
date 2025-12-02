@@ -1,8 +1,8 @@
 {
 	"@programName": "ZAP",
 	"@version": "2.16.1",
-	"@generated": "Mon, 24 Nov 2025 17:16:18",
-	"created": "2025-11-24T17:16:18.300922695Z",
+	"@generated": "Tue, 2 Dec 2025 12:13:01",
+	"created": "2025-12-02T12:13:01.063391232Z",
 	"site":[ 
 		{
 			"@name": "https://dev.dy006p1vkpl2e.amplifyapp.com",
@@ -21,7 +21,7 @@
 					"desc": "<p>Content Security Policy (CSP) is an added layer of security that helps to detect and mitigate certain types of attacks, including Cross Site Scripting (XSS) and data injection attacks. These attacks are used for everything from data theft to site defacement or distribution of malware. CSP provides a set of standard HTTP headers that allow website owners to declare approved sources of content that browsers should be allowed to load on that page \u2014 covered types are JavaScript, CSS, HTML frames, fonts, images and embeddable objects such as Java applets, ActiveX, audio and video files.</p>",
 					"instances":[ 
 						{
-							"id": "8",
+							"id": "7",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com",
 							"nodeName": null,
 							"method": "GET",
@@ -31,7 +31,7 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "5",
+							"id": "10",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/",
 							"nodeName": null,
 							"method": "GET",
@@ -41,17 +41,7 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "37",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/robots.txt",
-							"nodeName": null,
-							"method": "GET",
-							"param": "",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": ""
-						},
-						{
-							"id": "3",
+							"id": "32",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/sitemap.xml",
 							"nodeName": null,
 							"method": "GET",
@@ -61,7 +51,7 @@
 							"otherinfo": ""
 						}
 					],
-					"count": "4",
+					"count": "3",
 					"systemic": false,
 					"solution": "<p>Ensure that your web server, application server, load balancer, etc. is configured to set the Content-Security-Policy header.</p>",
 					"otherinfo": "",
@@ -81,18 +71,8 @@
 					"desc": "<p>The response does not protect against 'ClickJacking' attacks. It should include either Content-Security-Policy with 'frame-ancestors' directive or X-Frame-Options.</p>",
 					"instances":[ 
 						{
-							"id": "2",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com",
-							"nodeName": null,
-							"method": "GET",
-							"param": "x-frame-options",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": ""
-						},
-						{
 							"id": "1",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com",
 							"nodeName": null,
 							"method": "GET",
 							"param": "x-frame-options",
@@ -101,14 +81,14 @@
 							"otherinfo": ""
 						}
 					],
-					"count": "2",
+					"count": "1",
 					"systemic": false,
 					"solution": "<p>Modern Web browsers support the Content-Security-Policy and X-Frame-Options HTTP headers. Ensure one of them is set on all web pages returned by your site/app.</p><p>If you expect the page to be framed only by pages on your server (e.g. it's part of a FRAMESET) then you'll want to use SAMEORIGIN, otherwise if you never expect the page to be framed, you should use DENY. Alternatively consider implementing Content Security Policy's \"frame-ancestors\" directive.</p>",
 					"otherinfo": "",
 					"reference": "<p>https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Frame-Options</p>",
 					"cweid": "1021",
 					"wascid": "15",
-					"sourceid": "6"
+					"sourceid": "1"
 				},
 				{
 					"pluginid": "90004",
@@ -121,77 +101,77 @@
 					"desc": "<p>Cross-Origin-Resource-Policy header is an opt-in header designed to counter side-channels attacks like Spectre. Resource should be specifically set as shareable amongst different origins.</p>",
 					"instances":[ 
 						{
+							"id": "29",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com",
+							"nodeName": null,
+							"method": "GET",
+							"param": "Cross-Origin-Resource-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "43",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/",
+							"nodeName": null,
+							"method": "GET",
+							"param": "Cross-Origin-Resource-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "60",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-5UIPK2NU.js",
+							"nodeName": null,
+							"method": "GET",
+							"param": "Cross-Origin-Resource-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "66",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-VELP2JM4.js",
+							"nodeName": null,
+							"method": "GET",
+							"param": "Cross-Origin-Resource-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "64",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/styles-T35RNTTW.css",
+							"nodeName": null,
+							"method": "GET",
+							"param": "Cross-Origin-Resource-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "30",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com",
+							"nodeName": null,
+							"method": "GET",
+							"param": "Cross-Origin-Embedder-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "44",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/",
+							"nodeName": null,
+							"method": "GET",
+							"param": "Cross-Origin-Embedder-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
 							"id": "31",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com",
-							"nodeName": null,
-							"method": "GET",
-							"param": "Cross-Origin-Resource-Policy",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": ""
-						},
-						{
-							"id": "47",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/",
-							"nodeName": null,
-							"method": "GET",
-							"param": "Cross-Origin-Resource-Policy",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": ""
-						},
-						{
-							"id": "55",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/assets/favicon.ico",
-							"nodeName": null,
-							"method": "GET",
-							"param": "Cross-Origin-Resource-Policy",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": ""
-						},
-						{
-							"id": "68",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-D34GULR3.js",
-							"nodeName": null,
-							"method": "GET",
-							"param": "Cross-Origin-Resource-Policy",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": ""
-						},
-						{
-							"id": "69",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-URSGUKBW.js",
-							"nodeName": null,
-							"method": "GET",
-							"param": "Cross-Origin-Resource-Policy",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": ""
-						},
-						{
-							"id": "34",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com",
-							"nodeName": null,
-							"method": "GET",
-							"param": "Cross-Origin-Embedder-Policy",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": ""
-						},
-						{
-							"id": "48",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/",
-							"nodeName": null,
-							"method": "GET",
-							"param": "Cross-Origin-Embedder-Policy",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": ""
-						},
-						{
-							"id": "35",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com",
 							"nodeName": null,
 							"method": "GET",
@@ -201,7 +181,7 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "50",
+							"id": "46",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/",
 							"nodeName": null,
 							"method": "GET",
@@ -218,7 +198,7 @@
 					"reference": "<p>https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cross-Origin-Embedder-Policy</p>",
 					"cweid": "693",
 					"wascid": "14",
-					"sourceid": "6"
+					"sourceid": "1"
 				},
 				{
 					"pluginid": "10063",
@@ -241,7 +221,7 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "45",
+							"id": "42",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/",
 							"nodeName": null,
 							"method": "GET",
@@ -251,38 +231,8 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "75",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-2VVEWVTO.js",
-							"nodeName": null,
-							"method": "GET",
-							"param": "",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": ""
-						},
-						{
-							"id": "67",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-D34GULR3.js",
-							"nodeName": null,
-							"method": "GET",
-							"param": "",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": ""
-						},
-						{
-							"id": "89",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-DWTJ463Y.js",
-							"nodeName": null,
-							"method": "GET",
-							"param": "",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": ""
-						},
-						{
-							"id": "90",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-MR7EZGUD.js",
+							"id": "59",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-5UIPK2NU.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "",
@@ -292,7 +242,7 @@
 						},
 						{
 							"id": "85",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-NKVN6DSE.js",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-65P554UV.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "",
@@ -301,8 +251,38 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "81",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-QGCFGSST.js",
+							"id": "82",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-FXGZTF46.js",
+							"nodeName": null,
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "75",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-GYS762SR.js",
+							"nodeName": null,
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "88",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-LHVZGTXC.js",
+							"nodeName": null,
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "90",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-MC7CQRBC.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "",
@@ -312,7 +292,7 @@
 						},
 						{
 							"id": "65",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-URSGUKBW.js",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-VELP2JM4.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "",
@@ -321,7 +301,7 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "66",
+							"id": "41",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/robots.txt",
 							"nodeName": null,
 							"method": "GET",
@@ -348,7 +328,7 @@
 					"reference": "<p>https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Permissions-Policy</p><p>https://developer.chrome.com/blog/feature-policy/</p><p>https://scotthelme.co.uk/a-new-security-header-feature-policy/</p><p>https://w3c.github.io/webappsec-feature-policy/</p><p>https://www.smashingmagazine.com/2018/12/feature-policy/</p>",
 					"cweid": "693",
 					"wascid": "15",
-					"sourceid": "6"
+					"sourceid": "1"
 				},
 				{
 					"pluginid": "10036",
@@ -361,7 +341,7 @@
 					"desc": "<p>The web/application server is leaking version information via the \"Server\" HTTP response header. Access to such information may facilitate attackers identifying other vulnerabilities your web/application server is subject to.</p>",
 					"instances":[ 
 						{
-							"id": "13",
+							"id": "12",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com",
 							"nodeName": null,
 							"method": "GET",
@@ -371,7 +351,7 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "21",
+							"id": "23",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/",
 							"nodeName": null,
 							"method": "GET",
@@ -381,7 +361,7 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "51",
+							"id": "68",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/assets/favicon.ico",
 							"nodeName": null,
 							"method": "GET",
@@ -391,8 +371,8 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "71",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-2VVEWVTO.js",
+							"id": "50",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-5UIPK2NU.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "",
@@ -401,18 +381,8 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "56",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-D34GULR3.js",
-							"nodeName": null,
-							"method": "GET",
-							"param": "",
-							"attack": "",
-							"evidence": "AmazonS3",
-							"otherinfo": ""
-						},
-						{
-							"id": "80",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-NKVN6DSE.js",
+							"id": "78",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-65P554UV.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "",
@@ -422,7 +392,7 @@
 						},
 						{
 							"id": "76",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-QGCFGSST.js",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-FXGZTF46.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "",
@@ -431,8 +401,8 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "57",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-URSGUKBW.js",
+							"id": "67",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-GYS762SR.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "",
@@ -441,7 +411,17 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "39",
+							"id": "54",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-VELP2JM4.js",
+							"nodeName": null,
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "AmazonS3",
+							"otherinfo": ""
+						},
+						{
+							"id": "13",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/robots.txt",
 							"nodeName": null,
 							"method": "GET",
@@ -451,7 +431,7 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "11",
+							"id": "34",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/sitemap.xml",
 							"nodeName": null,
 							"method": "GET",
@@ -461,7 +441,7 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "41",
+							"id": "52",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/styles-T35RNTTW.css",
 							"nodeName": null,
 							"method": "GET",
@@ -491,7 +471,7 @@
 					"desc": "<p>HTTP Strict Transport Security (HSTS) is a web security policy mechanism whereby a web server declares that complying user agents (such as a web browser) are to interact with it using only secure HTTPS connections (i.e. HTTP layered over TLS/SSL). HSTS is an IETF standards track protocol and is specified in RFC 6797.</p>",
 					"instances":[ 
 						{
-							"id": "18",
+							"id": "15",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com",
 							"nodeName": null,
 							"method": "GET",
@@ -501,7 +481,7 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "23",
+							"id": "24",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/",
 							"nodeName": null,
 							"method": "GET",
@@ -511,7 +491,7 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "52",
+							"id": "70",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/assets/favicon.ico",
 							"nodeName": null,
 							"method": "GET",
@@ -521,8 +501,8 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "72",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-2VVEWVTO.js",
+							"id": "51",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-5UIPK2NU.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "",
@@ -531,18 +511,8 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "59",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-D34GULR3.js",
-							"nodeName": null,
-							"method": "GET",
-							"param": "",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": ""
-						},
-						{
-							"id": "82",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-NKVN6DSE.js",
+							"id": "81",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-65P554UV.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "",
@@ -552,7 +522,7 @@
 						},
 						{
 							"id": "77",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-QGCFGSST.js",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-FXGZTF46.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "",
@@ -561,8 +531,8 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "58",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-URSGUKBW.js",
+							"id": "69",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-GYS762SR.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "",
@@ -571,7 +541,17 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "40",
+							"id": "56",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-VELP2JM4.js",
+							"nodeName": null,
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "14",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/robots.txt",
 							"nodeName": null,
 							"method": "GET",
@@ -581,7 +561,7 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "15",
+							"id": "35",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/sitemap.xml",
 							"nodeName": null,
 							"method": "GET",
@@ -591,7 +571,7 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "42",
+							"id": "53",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/styles-T35RNTTW.css",
 							"nodeName": null,
 							"method": "GET",
@@ -621,7 +601,7 @@
 					"desc": "<p>The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'. This allows older versions of Internet Explorer and Chrome to perform MIME-sniffing on the response body, potentially causing the response body to be interpreted and displayed as a content type other than the declared content type. Current (early 2014) and legacy versions of Firefox will use the declared content type (if one is set), rather than performing MIME-sniffing.</p>",
 					"instances":[ 
 						{
-							"id": "24",
+							"id": "22",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com",
 							"nodeName": null,
 							"method": "GET",
@@ -641,7 +621,7 @@
 							"otherinfo": "This issue still applies to error type pages (401, 403, 500, etc.) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.\nAt \"High\" threshold this scan rule will not alert on client or server error responses."
 						},
 						{
-							"id": "53",
+							"id": "71",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/assets/favicon.ico",
 							"nodeName": null,
 							"method": "GET",
@@ -651,38 +631,8 @@
 							"otherinfo": "This issue still applies to error type pages (401, 403, 500, etc.) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.\nAt \"High\" threshold this scan rule will not alert on client or server error responses."
 						},
 						{
-							"id": "73",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-2VVEWVTO.js",
-							"nodeName": null,
-							"method": "GET",
-							"param": "x-content-type-options",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": "This issue still applies to error type pages (401, 403, 500, etc.) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.\nAt \"High\" threshold this scan rule will not alert on client or server error responses."
-						},
-						{
-							"id": "63",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-D34GULR3.js",
-							"nodeName": null,
-							"method": "GET",
-							"param": "x-content-type-options",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": "This issue still applies to error type pages (401, 403, 500, etc.) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.\nAt \"High\" threshold this scan rule will not alert on client or server error responses."
-						},
-						{
-							"id": "88",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-DWTJ463Y.js",
-							"nodeName": null,
-							"method": "GET",
-							"param": "x-content-type-options",
-							"attack": "",
-							"evidence": "",
-							"otherinfo": "This issue still applies to error type pages (401, 403, 500, etc.) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.\nAt \"High\" threshold this scan rule will not alert on client or server error responses."
-						},
-						{
-							"id": "87",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-MR7EZGUD.js",
+							"id": "55",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-5UIPK2NU.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "x-content-type-options",
@@ -692,7 +642,7 @@
 						},
 						{
 							"id": "83",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-NKVN6DSE.js",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-65P554UV.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "x-content-type-options",
@@ -701,8 +651,38 @@
 							"otherinfo": "This issue still applies to error type pages (401, 403, 500, etc.) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.\nAt \"High\" threshold this scan rule will not alert on client or server error responses."
 						},
 						{
-							"id": "78",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-QGCFGSST.js",
+							"id": "79",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-FXGZTF46.js",
+							"nodeName": null,
+							"method": "GET",
+							"param": "x-content-type-options",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "This issue still applies to error type pages (401, 403, 500, etc.) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.\nAt \"High\" threshold this scan rule will not alert on client or server error responses."
+						},
+						{
+							"id": "73",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-GYS762SR.js",
+							"nodeName": null,
+							"method": "GET",
+							"param": "x-content-type-options",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "This issue still applies to error type pages (401, 403, 500, etc.) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.\nAt \"High\" threshold this scan rule will not alert on client or server error responses."
+						},
+						{
+							"id": "86",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-LHVZGTXC.js",
+							"nodeName": null,
+							"method": "GET",
+							"param": "x-content-type-options",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "This issue still applies to error type pages (401, 403, 500, etc.) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.\nAt \"High\" threshold this scan rule will not alert on client or server error responses."
+						},
+						{
+							"id": "89",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-MC7CQRBC.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "x-content-type-options",
@@ -712,7 +692,7 @@
 						},
 						{
 							"id": "61",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-URSGUKBW.js",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-VELP2JM4.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "x-content-type-options",
@@ -721,7 +701,7 @@
 							"otherinfo": "This issue still applies to error type pages (401, 403, 500, etc.) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.\nAt \"High\" threshold this scan rule will not alert on client or server error responses."
 						},
 						{
-							"id": "43",
+							"id": "58",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/styles-T35RNTTW.css",
 							"nodeName": null,
 							"method": "GET",
@@ -751,34 +731,34 @@
 					"desc": "<p>The response appears to contain suspicious comments which may help an attacker.</p>",
 					"instances":[ 
 						{
-							"id": "86",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-MR7EZGUD.js",
+							"id": "91",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-6MYMN6DC.js",
+							"nodeName": null,
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "XXX",
+							"otherinfo": "The following pattern was used: \\bXXX\\b and was detected in likely comment: \"//\").test(e)){let[,n]=e.split(/\\/\\/[^\\/]+/);return n}return e}var Ng={ADP:[void 0,void 0,0],AFN:[void 0,\"\\u060B\",0],ALL:[void 0,\", see evidence field for the suspicious comment/snippet."
+						},
+						{
+							"id": "87",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-MC7CQRBC.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "",
 							"attack": "",
 							"evidence": "select",
 							"otherinfo": "The following pattern was used: \\bSELECT\\b and was detected in likely comment: \"//www.w3.org/2000/svg\",width:24,height:24,viewBox:\"0 0 24 24\",fill:\"none\",stroke:\"currentColor\",\"stroke-width\":2,\"stroke-linecap\", see evidence field for the suspicious comment/snippet."
-						},
-						{
-							"id": "91",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-N4UUAKPA.js",
-							"nodeName": null,
-							"method": "GET",
-							"param": "",
-							"attack": "",
-							"evidence": "XXX",
-							"otherinfo": "The following pattern was used: \\bXXX\\b and was detected in likely comment: \"//\").test(e)){let[,n]=e.split(/\\/\\/[^\\/]+/);return n}return e}var Mg={ADP:[void 0,void 0,0],AFN:[void 0,\"\\u060B\",0],ALL:[void 0,\", see evidence field for the suspicious comment/snippet."
 						}
 					],
 					"count": "2",
 					"systemic": false,
 					"solution": "<p>Remove all comments that return information that may help an attacker and fix any underlying problems they refer to.</p>",
-					"otherinfo": "<p>The following pattern was used: \\bSELECT\\b and was detected in likely comment: \"//www.w3.org/2000/svg\",width:24,height:24,viewBox:\"0 0 24 24\",fill:\"none\",stroke:\"currentColor\",\"stroke-width\":2,\"stroke-linecap\", see evidence field for the suspicious comment/snippet.</p>",
+					"otherinfo": "<p>The following pattern was used: \\bXXX\\b and was detected in likely comment: \"//\").test(e)){let[,n]=e.split(/\\/\\/[^\\/]+/);return n}return e}var Ng={ADP:[void 0,void 0,0],AFN:[void 0,\"\\u060B\",0],ALL:[void 0,\", see evidence field for the suspicious comment/snippet.</p>",
 					"reference": "",
 					"cweid": "615",
 					"wascid": "13",
-					"sourceid": "35"
+					"sourceid": "38"
 				},
 				{
 					"pluginid": "10109",
@@ -791,7 +771,7 @@
 					"desc": "<p>The application appears to be a modern web application. If you need to explore it automatically then the Ajax Spider may well be more effective than the standard one.</p>",
 					"instances":[ 
 						{
-							"id": "12",
+							"id": "11",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com",
 							"nodeName": null,
 							"method": "GET",
@@ -801,7 +781,7 @@
 							"otherinfo": "No links have been found while there are scripts, which is an indication that this is a modern web application."
 						},
 						{
-							"id": "16",
+							"id": "17",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/",
 							"nodeName": null,
 							"method": "GET",
@@ -811,7 +791,7 @@
 							"otherinfo": "No links have been found while there are scripts, which is an indication that this is a modern web application."
 						},
 						{
-							"id": "38",
+							"id": "5",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/robots.txt",
 							"nodeName": null,
 							"method": "GET",
@@ -821,7 +801,7 @@
 							"otherinfo": "No links have been found while there are scripts, which is an indication that this is a modern web application."
 						},
 						{
-							"id": "7",
+							"id": "33",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/sitemap.xml",
 							"nodeName": null,
 							"method": "GET",
@@ -851,7 +831,7 @@
 					"desc": "<p>The cache-control header has not been set properly or is missing, allowing the browser and proxies to cache content. For static assets like css, js, or image files this might be intended, however, the resources should be reviewed to ensure that no sensitive content will be cached.</p>",
 					"instances":[ 
 						{
-							"id": "6",
+							"id": "4",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com",
 							"nodeName": null,
 							"method": "GET",
@@ -861,7 +841,7 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "4",
+							"id": "6",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/",
 							"nodeName": null,
 							"method": "GET",
@@ -891,7 +871,7 @@
 					"desc": "<p>The content was retrieved from a shared cache. If the response data is sensitive, personal or user-specific, this may result in sensitive information being leaked. In some cases, this may even result in a user gaining complete control of the session of another user, depending on the configuration of the caching components in use in their environment. This is primarily an issue where caching servers such as \"proxy\" caches are configured on the local network. This configuration is typically found in corporate or educational environments, for instance.</p>",
 					"instances":[ 
 						{
-							"id": "17",
+							"id": "18",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com",
 							"nodeName": null,
 							"method": "GET",
@@ -941,7 +921,7 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "44",
+							"id": "38",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/",
 							"nodeName": null,
 							"method": "GET",
@@ -951,7 +931,7 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "54",
+							"id": "72",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/assets/favicon.ico",
 							"nodeName": null,
 							"method": "GET",
@@ -961,18 +941,8 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "74",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-2VVEWVTO.js",
-							"nodeName": null,
-							"method": "GET",
-							"param": "",
-							"attack": "",
-							"evidence": "s-maxage=31536000",
-							"otherinfo": ""
-						},
-						{
-							"id": "64",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-D34GULR3.js",
+							"id": "57",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-5UIPK2NU.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "",
@@ -982,7 +952,7 @@
 						},
 						{
 							"id": "84",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-NKVN6DSE.js",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-65P554UV.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "",
@@ -991,8 +961,8 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "79",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-QGCFGSST.js",
+							"id": "80",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-FXGZTF46.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "",
@@ -1001,8 +971,8 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "62",
-							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-URSGUKBW.js",
+							"id": "74",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-GYS762SR.js",
 							"nodeName": null,
 							"method": "GET",
 							"param": "",
@@ -1011,7 +981,17 @@
 							"otherinfo": ""
 						},
 						{
-							"id": "60",
+							"id": "63",
+							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/chunk-VELP2JM4.js",
+							"nodeName": null,
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "s-maxage=31536000",
+							"otherinfo": ""
+						},
+						{
+							"id": "36",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/robots.txt",
 							"nodeName": null,
 							"method": "GET",
@@ -1021,7 +1001,7 @@
 							"otherinfo": "In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234."
 						},
 						{
-							"id": "46",
+							"id": "48",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/sitemap.xml",
 							"nodeName": null,
 							"method": "GET",
@@ -1031,7 +1011,7 @@
 							"otherinfo": "In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234."
 						},
 						{
-							"id": "70",
+							"id": "62",
 							"uri": "https://dev.dy006p1vkpl2e.amplifyapp.com/styles-T35RNTTW.css",
 							"nodeName": null,
 							"method": "GET",
@@ -1048,7 +1028,7 @@
 					"reference": "<p>https://datatracker.ietf.org/doc/html/rfc7234</p><p>https://datatracker.ietf.org/doc/html/rfc7231</p><p>https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html</p>",
 					"cweid": "524",
 					"wascid": "13",
-					"sourceid": "6"
+					"sourceid": "1"
 				}
 			]
 		}
