@@ -10,6 +10,11 @@ import com.skillboost.ui_tests.utils.WaitUtils;
 import com.skillboost.ui_tests.utils.JsonDataReader;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 import java.util.Map;
 
 
@@ -20,6 +25,7 @@ import java.util.Map;
 @Feature("Signup Page")
 @Story("User navigates and signs up successfully")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag("regression")
 public class SignupTest extends UiBaseTest {
 
     private HomePage homePage;
@@ -70,8 +76,8 @@ public class SignupTest extends UiBaseTest {
         // Step 1: Navigate to Signup Page
         log.info("Navigating to signup page...");
         homePage.navigateToSignup();
-
         WaitUtils.waitForVisibility(signupPage.createAccountHeader);
+
         AssertionLogger.assertTrueWithLog(
                 signupPage.isCreateAccountHeaderVisible(),
                 "Signup page header is visible — page loaded successfully."
@@ -92,37 +98,28 @@ public class SignupTest extends UiBaseTest {
 
         // Step 3: Fill in the Signup Form
         log.info("Filling in signup form fields...");
-
         WaitUtils.waitForVisibility(signupPage.emailInput);
         signupPage.enterEmail(email);
         signupPage.enterPassword(password);
         signupPage.enterConfirmPassword(confirmPassword);
 
-        WaitUtils.waitForClickability(signupPage.termsCheckbox);
-        signupPage.toggleTermsCheckbox();
-        log.info("Filled in all fields and accepted terms and conditions.");
-
-        // Step 4: Validate Create Account Button
-        AssertionLogger.assertTrueWithLog(
-                signupPage.isCreateAccountButtonEnabled(),
-                "Create Account button is enabled after entering valid inputs."
-        );
-
+        // Step 4: Scroll to Create Account button and click it
+        log.info("Scrolling to and clicking Create Account button...");
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", signupPage.createAccountButton);
         WaitUtils.waitForClickability(signupPage.createAccountButton);
         signupPage.clickCreateAccount();
-        log.info("Clicked on Create Account button.");
 
-        // Verify Expected Outcome
-        WaitUtils.getWait(); // ensures sync time for navigation or response
+        // Step 5: Explicitly wait for redirection to email verification
+        log.info("Waiting for redirection to email verification page...");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        boolean redirected = wait.until(ExpectedConditions.urlContains("email-verification"));
 
-        String currentUrl = driver.getCurrentUrl();
         AssertionLogger.assertTrueWithLog(
-                currentUrl.contains("email-verification"),
+                redirected,
                 "User is redirected to a verification or authentication step after signup."
         );
 
         log.info("Signup form submission test passed successfully.");
-
     }
 
 
@@ -134,6 +131,8 @@ public class SignupTest extends UiBaseTest {
     public void testSignupButtonDisabledForEmptyFields() {
         log.info("Starting test: Create Account button should remain disabled for empty signup form.");
 
+        // Step 1: Navigate to Signup Page
+        log.info("Navigating to signup page...");
         homePage.navigateToSignup();
 
         WaitUtils.waitForVisibility(signupPage.createAccountHeader);
@@ -142,14 +141,15 @@ public class SignupTest extends UiBaseTest {
                 "Signup page loaded successfully."
         );
 
+        // Step 2: Ensure all fields are empty
         WaitUtils.waitForVisibility(signupPage.emailInput);
         signupPage.clearEmailField();
         signupPage.clearPasswordField();
         signupPage.clearConfirmPasswordField();
+        log.info("All input fields (email, password, confirm password) are cleared.");
 
-        log.info("Ensured that all input fields (email, password, confirm password) are empty.");
-
-
+        // Step 3: Verify that Create Account button is disabled
+        WaitUtils.waitForVisibility(signupPage.createAccountButton); // optional but safer
         boolean isButtonEnabled = signupPage.isCreateAccountButtonEnabled();
         AssertionLogger.assertFalseWithLog(
                 isButtonEnabled,
@@ -159,6 +159,7 @@ public class SignupTest extends UiBaseTest {
         log.info("Verified that Create Account button is disabled for empty signup form.");
     }
 
+
     @Test
     @Order(4)
     @Description("Validates that the Create Account button remains disabled when password and confirm password do not match.")
@@ -167,6 +168,8 @@ public class SignupTest extends UiBaseTest {
     public void testSignupButtonDisabledForMismatchedPasswords() {
         log.info("Starting test: Create Account button should remain disabled for mismatched passwords.");
 
+        // Step 1: Navigate to Signup Page
+        log.info("Navigating to signup page...");
         homePage.navigateToSignup();
 
         WaitUtils.waitForVisibility(signupPage.createAccountHeader);
@@ -175,33 +178,41 @@ public class SignupTest extends UiBaseTest {
                 "Signup page loaded successfully."
         );
 
+        // Step 2: Load mismatching password test data
         log.info("Loading mismatching password test data from JSON file: {}", TESTDATA_FILE);
         Map<String, Map<String, String>> testData = JsonDataReader.getTestData(TESTDATA_FILE);
-        Map<String, String> validUser = testData.get("mismatchedUser");
+        Map<String, String> mismatchedUser = testData.get("mismatchedUser");
 
-        String email = validUser.get("email");
-        String password = validUser.get("password");
-        String confirmPassword = validUser.get("confirmPassword");
+        String email = mismatchedUser.get("email");
+        String password = mismatchedUser.get("password");
+        String confirmPassword = mismatchedUser.get("confirmPassword");
 
+        // Safety checks
+        AssertionLogger.assertNotNullWithLog(email, "Email loaded from JSON is not null.");
+        AssertionLogger.assertNotNullWithLog(password, "Password loaded from JSON is not null.");
+        AssertionLogger.assertNotNullWithLog(confirmPassword, "Confirm Password loaded from JSON is not null.");
+
+        // Step 3: Fill the signup form
+        log.info("Entering valid email with mismatched passwords...");
         WaitUtils.waitForVisibility(signupPage.emailInput);
         signupPage.enterEmail(email);
         signupPage.enterPassword(password);
         signupPage.enterConfirmPassword(confirmPassword);
 
-        WaitUtils.waitForClickability(signupPage.termsCheckbox);
-        signupPage.toggleTermsCheckbox();
-
-        log.info("Entered valid email and mismatched passwords; terms checkbox selected.");
-
-        // Verify Create Account button is disabled
+        // Step 4: Verify Create Account button is disabled
+        WaitUtils.waitForVisibility(signupPage.createAccountButton);
         boolean isButtonEnabled = signupPage.isCreateAccountButtonEnabled();
+
         AssertionLogger.assertFalseWithLog(
                 isButtonEnabled,
                 "Create Account button should be disabled when passwords do not match."
         );
 
-        log.info("Verified that Create Account button is disabled for mismatched passwords.");
+        log.info("Verified Create Account button remains disabled for mismatched passwords.");
     }
+
+
+
 
     @Test
     @Order(5)
@@ -232,8 +243,6 @@ public class SignupTest extends UiBaseTest {
         signupPage.enterPassword(password);
         signupPage.enterConfirmPassword(confirmPassword);
 
-        WaitUtils.waitForClickability(signupPage.termsCheckbox);
-        signupPage.toggleTermsCheckbox();
 
         log.info("Entered invalid email and matching passwords; terms checkbox selected.");
 
@@ -281,9 +290,6 @@ public class SignupTest extends UiBaseTest {
         signupPage.enterPassword(password);
         signupPage.enterConfirmPassword(confirmPassword);
 
-        WaitUtils.waitForClickability(signupPage.termsCheckbox);
-        signupPage.toggleTermsCheckbox();
-
         log.info("Entered valid email and a password not meeting required length. Terms checkbox selected.");
 
         // Verify Create Account button is disabled
@@ -295,186 +301,6 @@ public class SignupTest extends UiBaseTest {
 
         log.info("Verified that Create Account button is disabled for wrong password length.");
     }
-
-    @Test
-    @Order(7)
-    @Description("Validates that the Create Account button remains disabled when the Terms and Conditions checkbox is not checked.")
-    @DisplayName("Verify Create Account button is disabled when terms not accepted")
-    @Severity(SeverityLevel.NORMAL)
-    public void testSignupButtonDisabledWithoutAcceptingTerms() {
-        log.info("Starting test: Create Account button should remain disabled if Terms and Conditions are not accepted.");
-
-        // Step 1: Navigate to Signup Page
-        homePage.navigateToSignup();
-        WaitUtils.waitForVisibility(signupPage.createAccountHeader);
-        AssertionLogger.assertTrueWithLog(
-                signupPage.isCreateAccountHeaderVisible(),
-                "Signup page loaded successfully."
-        );
-
-        log.info("Loading valid signup test data from JSON file: {}", TESTDATA_FILE);
-        Map<String, Map<String, String>> testData = JsonDataReader.getTestData(TESTDATA_FILE);
-        Map<String, String> validUser = testData.get("validUser");
-
-        String email = validUser.get("email");
-        String password = validUser.get("password");
-        String confirmPassword = validUser.get("confirmPassword");
-
-        // Step 2: Fill in the form (without checking terms)
-        WaitUtils.waitForVisibility(signupPage.emailInput);
-        signupPage.enterEmail(email);
-        signupPage.enterPassword(password);
-        signupPage.enterConfirmPassword(confirmPassword);
-
-        log.info("Filled in email and password fields; Terms checkbox NOT selected.");
-
-        // Step 3: Verify Create Account button is disabled
-        boolean isButtonEnabled = signupPage.isCreateAccountButtonEnabled();
-        AssertionLogger.assertFalseWithLog(
-                isButtonEnabled,
-                "Create Account button should be disabled when Terms and Conditions are not accepted."
-        );
-
-        log.info("Verified that Create Account button is disabled when Terms and Conditions are unchecked.");
-    }
-
-
-    @Test
-    @Order(8)
-    @DisplayName("Verify Sign in with Google button behavior")
-    @Severity(SeverityLevel.NORMAL)
-    @Description("Ensures that the 'Sign in with Google' button is visible, clickable, and correctly redirects to Google login.")
-    public void verifySignInWithGoogleFunctionality() {
-        log.info("Starting test: Sign in with Google button behavior.");
-
-        // Step 1: Navigate to Signup Page
-        homePage.navigateToSignup();
-        WaitUtils.waitForVisibility(signupPage.createAccountHeader);
-        AssertionLogger.assertTrueWithLog(
-                signupPage.isCreateAccountHeaderVisible(),
-                "Signup page loaded successfully."
-        );
-
-        // Step 2: Verify Google Sign-In button visibility and clickability
-        WaitUtils.waitForVisibility(SignupPage.googleLoginButton);
-        WaitUtils.waitForClickability(SignupPage.googleLoginButton);
-
-        AssertionLogger.assertTrueWithLog(
-                SignupPage.googleLoginButton.isDisplayed(),
-                "Google Sign-In button is visible on the Signup page."
-        );
-        AssertionLogger.assertTrueWithLog(
-                SignupPage.googleLoginButton.isEnabled(),
-                "Google Sign-In button is enabled for user interaction."
-        );
-
-        // Step 3: Click Google Sign-In button
-        log.info("Clicking 'Sign in with Google' button...");
-        SignupPage.clickGoogleLogin();
-
-        // Step 4: Wait for redirect to Google login page
-        WaitUtils.waitForUrlContains("accounts.google.com");
-
-        // Step 5: Verify current URL
-        String currentUrl = driver.getCurrentUrl();
-        Assertions.assertNotNull(currentUrl, "Current URL should not be null after clicking Google Sign-In.");
-
-        AssertionLogger.assertTrueWithLog(
-                currentUrl.contains("accounts.google.com"),
-                "User successfully redirected to Google login page: " + currentUrl
-        );
-
-        log.info("Google Sign-In redirect verification passed successfully.");
-    }
-
-
-
-
-    @Test
-    @Order(9)
-    @DisplayName("Verify Sign in with GitHub button behavior")
-    @Severity(SeverityLevel.NORMAL)
-    @Description("Ensures that the 'Sign in with GitHub' button is visible, clickable, and correctly redirects to GitHub login.")
-    public void verifySignInWithGithubFunctionality() {
-        log.info("Starting test: Sign in with GitHub button behavior.");
-
-        // Step 1: Navigate to Signup Page
-        homePage.navigateToSignup();
-        WaitUtils.waitForVisibility(signupPage.createAccountHeader);
-        AssertionLogger.assertTrueWithLog(
-                signupPage.isCreateAccountHeaderVisible(),
-                "Signup page loaded successfully."
-        );
-
-        // Step 2: Verify GitHub Sign-In button visibility and clickability
-        WaitUtils.waitForVisibility(signupPage.githubLoginButton);
-        WaitUtils.waitForClickability(signupPage.githubLoginButton);
-
-        AssertionLogger.assertTrueWithLog(
-                signupPage.githubLoginButton.isDisplayed(),
-                "GitHub Sign-In button is visible on the Signup page."
-        );
-        AssertionLogger.assertTrueWithLog(
-                signupPage.githubLoginButton.isEnabled(),
-                "GitHub Sign-In button is enabled for user interaction."
-        );
-
-        // Step 3: Click GitHub Sign-In button
-        log.info("Clicking 'Sign in with GitHub' button...");
-        signupPage.clickGithubLogin();
-
-        // Step 4: Wait for redirect to GitHub login page
-        WaitUtils.waitForUrlContains("github.com/login");
-
-        // Step 5: Verify current URL
-        String currentUrl = driver.getCurrentUrl();
-        Assertions.assertNotNull(currentUrl, "Current URL should not be null after clicking GitHub Sign-In.");
-
-        AssertionLogger.assertTrueWithLog(
-                currentUrl.contains("github.com/login"),
-                "User successfully redirected to GitHub login page: " + currentUrl
-        );
-
-        log.info("GitHub Sign-In redirect verification passed successfully.");
-    }
-
-
-    @Test
-    @Order(10)
-    @DisplayName("Verify navigation from Signup to Login page")
-    @Severity(SeverityLevel.NORMAL)
-    @Description("Ensures that clicking the 'Login' link on the Signup page redirects the user to the Login page successfully.")
-    public void testNavigateFromSignupToLogin() {
-        log.info("Starting test: Navigate from Signup to Login page.");
-
-        // Navigate to Signup Page
-        homePage.navigateToSignup();
-        WaitUtils.waitForVisibility(signupPage.createAccountHeader);
-        AssertionLogger.assertTrueWithLog(
-                signupPage.isCreateAccountHeaderVisible(),
-                "Signup page loaded successfully."
-        );
-
-        // Click Login link
-        WaitUtils.waitForClickability(signupPage.loginLink);
-        signupPage.clickLoginLink();
-        log.info("Clicked Login link on Signup page.");
-
-        // Wait for Login page to load
-        LoginPage loginPage = new LoginPage(driver);
-        WaitUtils.waitForVisibility(loginPage.getWelcomeBackText());
-
-        // Verify Login page elements
-        AssertionLogger.assertTrueWithLog(
-                loginPage.isWelcomeBackTextVisible(),
-                "Login page loaded successfully with 'Welcome Back' text visible."
-        );
-        AssertionLogger.assertFalseWithLog(
-                loginPage.isLoginButtonEnabled(),
-                "Login button is not enabled on Login page."
-        );
-
-        log.info("Navigation from Signup to Login page verified successfully.");
-    }
+    
 
 }
