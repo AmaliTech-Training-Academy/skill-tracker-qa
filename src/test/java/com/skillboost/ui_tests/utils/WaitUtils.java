@@ -1,11 +1,15 @@
 package com.skillboost.ui_tests.utils;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.sql.DriverManager;
 import java.time.Duration;
 import java.util.List;
+
+import static ch.qos.logback.core.spi.ComponentTracker.DEFAULT_TIMEOUT;
 
 public final class WaitUtils {
 
@@ -117,4 +121,6 @@ public final class WaitUtils {
         waitThread.remove();
         sessionIdThread.remove();
     }
+
+
 }
